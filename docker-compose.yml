@@ -1,0 +1,41 @@
+version: '3'
+services:
+    db:
+      image: mysql:5
+      ports:
+        - "3307:3306"
+      environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+        MYSQL_USER: 'root'
+      volumes:
+        - /home/gponty/docker/data/mysqlSf:/var/lib/mysql
+
+    maildev:
+        image: djfarrelly/maildev
+        ports:
+          - "8002:80"
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - "8080:80"
+        depends_on:
+            - db
+        environment:
+          PMA_HOST: db
+
+    php720:
+        build: php72
+        ports:
+          - "9072:80"
+        volumes:
+            - ./vhosts:/etc/apache2/sites-enabled
+            - /home/gponty/docker/www:/var/www
+
+    php710:
+        build: php71
+        ports:
+          - "9071:80"
+        volumes:
+            - ./vhosts:/etc/apache2/sites-enabled
+            - /home/gponty/docker/www:/var/www
